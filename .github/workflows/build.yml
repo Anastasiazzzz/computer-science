@@ -1,52 +1,42 @@
-name: Advanced CI Pipeline
+name: CI Pipeline
 
-on:
+on: # Триггеры
   push:
     branches: [ main ]
   pull_request:
-    branches: [ '*' ]
+    branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up Node.js (пример для JavaScript)
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-    
-    - name: Install dependencies
-      run: npm install
-      
-    - name: Run linter
-      run: npm run lint
-      
-    - name: Run unit tests
-      run: npm test
-      env:
-        CI: true
-      
-    - name: Build production bundle
-      run: npm run build
-      
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage-report
-        path: coverage/
-        
-    - name: Upload production build
-      uses: actions/upload-artifact@v2
-      with:
-        name: production-build
-        path: build/
-        
-    - name: Notify Slack on success
-      if: success()
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_MESSAGE: "Build succeeded for ${{ github.repository }}"
+      # 1. Загружаем код репозитория
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 2. Устанавливаем Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Укажите нужную версию
+
+      # 3. Устанавливаем зависимости
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Запускаем сборку
+      - name: Build project
+        run: npm run build
+
+      # 5. Запускаем тесты
+      - name: Run tests
+        run: npm test
+
+      # 6. (Опционально) Загружаем артефакты (результаты сборки)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        if: success()
+        with:
+          name: build-output
+          path: dist/  # Путь к собранным файлам
