@@ -1,52 +1,23 @@
-name: Advanced CI Pipeline
+name: CI Pipeline
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ '*' ]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up Node.js (пример для JavaScript)
-      uses: actions/setup-node@v2
+    - uses: actions/checkout@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
-    
-    - name: Install dependencies
-      run: npm install
-      
-    - name: Run linter
-      run: npm run lint
-      
-    - name: Run unit tests
-      run: npm test
-      env:
-        CI: true
-      
-    - name: Build production bundle
-      run: npm run build
-      
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage-report
-        path: coverage/
+        node-version: '20'
         
-    - name: Upload production build
-      uses: actions/upload-artifact@v2
+    - run: npm install
+    - run: npm test
+      
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
-        name: production-build
-        path: build/
-        
-    - name: Notify Slack on success
-      if: success()
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_MESSAGE: "Build succeeded for ${{ github.repository }}"
+        name: build-artifact
+        path: dist/
