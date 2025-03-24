@@ -1,42 +1,24 @@
 name: CI Pipeline
 
-on: # Триггеры
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-
+    
     steps:
-      # 1. Загружаем код репозитория
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # 2. Устанавливаем Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'  # Укажите нужную версию
-
-      # 3. Устанавливаем зависимости
-      - name: Install dependencies
-        run: npm install
-
-      # 4. Запускаем сборку
-      - name: Build project
-        run: npm run build
-
-      # 5. Запускаем тесты
-      - name: Run tests
-        run: npm test
-
-      # 6. (Опционально) Загружаем артефакты (результаты сборки)
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        if: success()
-        with:
-          name: build-output
-          path: dist/  # Путь к собранным файлам
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - run: npm install
+    - run: npm test
+      
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifact
+        path: dist/
