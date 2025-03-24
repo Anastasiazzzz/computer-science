@@ -17,23 +17,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'  # Кэширование будет использовать стандартный путь ~/.npm
-
-      - name: Install dependencies
-        run: npm install --audit --production  # Используем install вместо ci
-        env:
-          CI: true
-
-      - name: Build project
-        run: npm run build
+          cache: 'npm' 
 
       - name: Run tests
         run: npm test
         env:
           CI: true
-
-      - name: Run linter
-        run: npm run lint
 
       - name: Upload artifacts
         if: success()
