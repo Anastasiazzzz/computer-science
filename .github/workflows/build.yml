@@ -1,31 +1,23 @@
-name: Build and Test
+name: Build Project
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
+    branches: [ main ]
+  
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
+      # Проверка исходников из репозитория
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
+        uses: actions/checkout@v3
+        
+      # Установка необходимых зависимостей
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install pytest flask requests  # Установите все необходимые библиотеки
-
-      - name: Run tests
-        run: |
-          pytest  # Запуск тестов
+          npm install
+          
+      # Сборка проекта
+      - name: Build project
+        run: npm run build
