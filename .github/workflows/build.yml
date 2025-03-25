@@ -28,7 +28,7 @@ jobs:
 
       - name: Show found tests
         run: |
-          pytest --collect-only  # Посмотрим, какие тесты найдем
+          pytest --collect-only
 
       - name: Run tests
         run: |
