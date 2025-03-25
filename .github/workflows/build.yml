@@ -13,17 +13,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout кода из репозитория
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Установка Python
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
 
-      # Запуск тестов
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest flask requests  # Установите все необходимые библиотеки
+
       - name: Run tests
         run: |
-          pytest
+          pytest  # Запуск тестов
